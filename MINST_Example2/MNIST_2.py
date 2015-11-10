@@ -2,40 +2,31 @@ import input_data
 import tensorflow as tf
 
 
-print "Start program"
-mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
-print "Done loading images"
+print "Program started..."
+mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
+print "Done loading data"
 
-x = tf.placeholder("float", [None, 784])
+sess = tf.InteractiveSession()
+x=tf.placeholder("float",shape=[None, 784])
+y_=tf.placeholder("float",shape=[None,10])
+
+
 W = tf.Variable(tf.zeros([784,10]))
 b = tf.Variable(tf.zeros([10]))
 
-y = tf.nn.softmax(tf.matmul(x,W) + b)
-
-y_ = tf.placeholder("float", [None,10])
-
-print "Done init"
+sess.run(tf.initialize_all_variables())
+y = tf.nn.softmax(tf.matmul(x,W)+b)
 
 cross_entropy = -tf.reduce_sum(y_*tf.log(y))
+
 train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
 
-print "Done loading vars"
+for i in range(3):
+	batch = mnist.train.next_batch(50)
+	train_step.run(feed_dict={x:batch[0],y_: batch[1]})
 
-init = tf.initialize_all_variables()
-print "Done init vars"
+correct_prediction = tf.equal(tf.argmax(y,1),tf.argmax(y_,1))
 
-sess = tf.Session()
-sess.run(init)
-print "Session started"
+accuracy = tf.reduce_mean(tf.cast(correct_prediction,"float"))
 
-for i in range(4000):
-  batch_xs, batch_ys = mnist.train.next_batch(100)
-  sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})
-print "Done training"
-
-correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
-
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-
-
-print sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels})
+print accuracy.eval(feed_dict={x: mnist.test.images, y_: mnist.test.labels})
