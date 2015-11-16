@@ -41,7 +41,7 @@ x = tf.placeholder("float", [None, 2])
 W = tf.Variable(tf.random_normal([2, 2]))
 b = tf.Variable(tf.random_normal([2]))
 
-y = tf.nn.softmax(tf.matmul(x, W) + b)
+y = tf.nn.tanh(tf.matmul(x, W) + b)
 
 y_ = tf.placeholder("float", [None, 1])
 
@@ -59,15 +59,17 @@ sess = tf.Session()
 sess.run(init)
 print "Done: Session started"
 
-xTrain = np.array([[0, 0], [0, 1], [1, 0],[1, 1]])
+xTrain = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 yTrain = np.array([[0], [1], [1], [0]])
 
-for i in range(50):
+for i in range(500):
   # print i
     sess.run(train_step, feed_dict={x: xTrain, y_: yTrain})
 
+
 print b.eval(sess)
 print W.eval(sess)
+
 
 print "Done training"
 
@@ -76,9 +78,9 @@ correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
 
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 
-xTest = np.array([[0, 0], [0, 1]])
-yTest = np.array([[1], [1]])
+# xTest = np.array([[0, 0], [0, 1],[1, 0], [1, 1]])
+# yTest = np.array([[0], [1], [1], [0]])
 
 
 print "Result:"
-print sess.run(accuracy, feed_dict={x: xTest, y_: yTest})
+print sess.run(accuracy, feed_dict={x: xTrain, y_: yTrain})
