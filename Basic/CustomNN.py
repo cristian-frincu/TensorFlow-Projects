@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+from itertools import product
 
 # The idea is to make a trivial XOR NN, on which I can make some tests, and see how I can convert the B and W to
 #  structured text
@@ -38,17 +39,18 @@ with tf.Session() as sess:
 print "Done loading XOR table"
 
 x = tf.placeholder("float", [None, 2])
-W = tf.Variable(tf.random_normal([2, 2]))
-b = tf.Variable(tf.random_normal([2]))
+W = tf.Variable(tf.zeros([2,2]))
+b = tf.Variable(tf.zeros([2]))
 
-y = tf.nn.tanh(tf.matmul(x, W) + b)
+y = tf.nn.softmax(tf.matmul(x,W) + b)
 
-y_ = tf.placeholder("float", [None, 1])
+y_ = tf.placeholder("float", [None,1])
+
 
 print "Done init"
 
 cross_entropy = -tf.reduce_sum(y_*tf.log(y))
-train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
+train_step = tf.train.GradientDescentOptimizer(0.75).minimize(cross_entropy)
 
 print "Done loading vars"
 
@@ -60,27 +62,40 @@ sess.run(init)
 print "Done: Session started"
 
 xTrain = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
-yTrain = np.array([[0], [1], [1], [0]])
-
-for i in range(500):
-  # print i
-    sess.run(train_step, feed_dict={x: xTrain, y_: yTrain})
+yTrain = np.array([[1], [0], [0], [0]])
 
 
-print b.eval(sess)
-print W.eval(sess)
+acc=0.0
+while acc<0.85:
+  for i in range(500):
+      sess.run(train_step, feed_dict={x: xTrain, y_: yTrain})
 
 
-print "Done training"
+  print b.eval(sess)
+  print W.eval(sess)
 
 
-correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
-
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-
-# xTest = np.array([[0, 0], [0, 1],[1, 0], [1, 1]])
-# yTest = np.array([[0], [1], [1], [0]])
+  print "Done training"
 
 
-print "Result:"
-print sess.run(accuracy, feed_dict={x: xTrain, y_: yTrain})
+  correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1))
+
+  accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+
+  print "Result:"
+  acc= sess.run(accuracy, feed_dict={x: xTrain, y_: yTrain})
+  print acc
+
+B0 = b.eval(sess)[0]
+B1 = b.eval(sess)[1]
+W00 = W.eval(sess)[0][0]
+W01 = W.eval(sess)[0][1]
+W10 = W.eval(sess)[1][0]
+W11 = W.eval(sess)[1][1]
+
+for A,B in product([0,1],[0,1]):
+  top = W00*A + W01*A + B0
+  bottom = W10*B + W11*B + B1
+  print "A:",A," B:",B
+  # print "Top",top," Bottom: ", bottom
+  print "Sum:",top+bottom
