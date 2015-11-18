@@ -2,37 +2,37 @@ import tensorflow as tf
 import numpy as np
 from itertools import product
 
-# The idea is to make a trivial XOR NN, on which I can make some tests, and see how I can convert the B and W to
-#  structured text
-
-filename_queue = tf.train.string_input_producer(["testInt.csv"])
-
-reader = tf.TextLineReader()
-key, value = reader.read(filename_queue)
-
-# Default values, in case of empty columns. Also specifies the type of the
-# decoded result.
-record_defaults = [[1], [1], [1]]
-col1, col2, col3= tf.decode_csv(
-    value, record_defaults=record_defaults)
-# print tf.shape(col1)
-
-
-features = tf.pack([col1, col2, col3])
-
-with tf.Session() as sess:
-  # Start populating the filename queue.
-  coord = tf.train.Coordinator()
-  threads = tf.train.start_queue_runners(coord=coord)
-
-  for i in range(4):
-    # print i
-    example, label = sess.run([features, col3])
-    # print example, label
-
-  coord.request_stop()
-  coord.join(threads)
-
+# # The idea is to make a trivial XOR NN, on which I can make some tests, and see how I can convert the B and W to
+# #  structured text
+#
+# filename_queue = tf.train.string_input_producer(["testInt.csv"])
+#
+# reader = tf.TextLineReader()
+# key, value = reader.read(filename_queue)
+#
+# # Default values, in case of empty columns. Also specifies the type of the
+# # decoded result.
+# record_defaults = [[1], [1], [1]]
+# col1, col2, col3= tf.decode_csv(
+#     value, record_defaults=record_defaults)
+# # print tf.shape(col1)
+#
+#
+# features = tf.pack([col1, col2, col3])
+#
+# with tf.Session() as sess:
+#   # Start populating the filename queue.
+#   coord = tf.train.Coordinator()
+#   threads = tf.train.start_queue_runners(coord=coord)
+#
+#   for i in range(4):
+#     # print i
+#     example, label = sess.run([features, col3])
+#     # print example, label
+#
+#   coord.request_stop()
+#   coord.join(threads)
+#
 
 
 
@@ -62,7 +62,7 @@ sess.run(init)
 print "Done: Session started"
 
 xTrain = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
-yTrain = np.array([[1], [0], [0], [0]])
+yTrain = np.array([[0], [1], [1], [0]])
 
 
 acc=0.0
