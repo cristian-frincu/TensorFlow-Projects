@@ -39,12 +39,10 @@ for i in xrange(200):
         for x_input in [[0,0], [0, 1], [1, 0], [1, 1]]:
             print x_input, sess.run(y, feed_dict={x: [x_input]})
 
-print "--Hidden--"
-print W_hidden.eval(sess)
-print b_hidden.eval(sess)
-print "--Logits--"
-print W_logits.eval(sess)
-print b_logits.eval(sess)
-
-
+# print "--Hidden--"
+# print W_hidden.eval(sess)
+# print b_hidden.eval(sess)
+# print "--Logits--"
+# print W_logits.eval(sess)
+# print b_logits.eval(sess)
 
