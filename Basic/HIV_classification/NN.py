@@ -9,7 +9,7 @@ HIDDEN_NODES = 1000
 x = tf.placeholder(tf.float32,[None,8])
 W_hidden = tf.Variable(tf.truncated_normal([8,HIDDEN_NODES], stddev=1./math.sqrt(HIDDEN_NODES)), name="W_hidden")
 b_hidden = tf.Variable(tf.zeros([HIDDEN_NODES]), name="b_hidden")
-hidden = tf.nn.sigmoid(tf.matmul(x, W_hidden) + b_hidden)
+hidden = tf.nn.relu6(tf.matmul(x, W_hidden) + b_hidden)
 
 W_logits =  tf.Variable(tf.truncated_normal([HIDDEN_NODES, 2], stddev=1./math.sqrt(HIDDEN_NODES)), name= "W_logits")
 b_logits = tf.Variable(tf.zeros([2]), name="b_logits")
@@ -62,9 +62,11 @@ def mapProteinSequenceResult(input):
 for xInput,yInput in your_list:
     xTrain.append(mapProteinToInt(xInput))
     yTrain.append([int(mapProteinSequenceResult(yInput)), (-1*int(mapProteinSequenceResult(yInput)))])
-#
-# print xTrain
-# print yTrain
+
+print type(xTrain)
+print type(yTrain)
+
+
 
 saver = tf.train.Saver([W_hidden, b_hidden, W_logits, b_logits])
 
@@ -96,7 +98,7 @@ xTest = []
 yTest = []
 
 
-with open('impensData.txt', 'rb') as f:
+with open('schillingData.txt', 'rb') as f:
     reader = csv.reader(f)
     your_list = list(reader)
 
