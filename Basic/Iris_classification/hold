@@ -1,0 +1,15 @@
+def irisNameToList(name):
+    if name == "Iris-setosa":
+        return [1, 0, 0]
+    elif name == "Iris-versicolor":
+        return [0, 1, 0]
+    else:
+        return [0, 0, 1]
+
+def irisNameToFloat(name):
+    if name == "Iris-setosa":
+        return -1.
+    elif name == "Iris-versicolor":
+        return 0.
+    else:
+        return 1.
